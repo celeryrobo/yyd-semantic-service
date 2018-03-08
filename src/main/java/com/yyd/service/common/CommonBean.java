@@ -4,10 +4,6 @@ import com.ybnf.compiler.beans.AbstractSemanticResult;
 
 public class CommonBean extends AbstractSemanticResult {
 	private String semantic;
-	
-	public CommonBean(String semantic) {
-		this.semantic = semantic;
-	}
 
 	public String getSemantic() {
 		return semantic;
