@@ -3,22 +3,22 @@ package com.yyd.service.music;
 import com.ybnf.compiler.beans.AbstractSemanticResult;
 
 public class MusicBean extends AbstractSemanticResult {
-	private Integer id;
-	private String name;
-
-	public Integer getId() {
-		return id;
+	private String url;
+	
+	public MusicBean(int errCode) {
+		setErrCode(errCode);
+	}
+	public MusicBean(String url,Object resource) {
+		this.url = url;
+		setOperation(Operation.PLAY);
+		setParamType(ParamType.U);
+		setResource(resource);
+	}
+	public String getUrl() {
+		return url;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }
