@@ -1,8 +1,8 @@
-package com.yyd.service.common;
+package com.yyd.service.utils;
 
 import java.util.Random;
 
-import com.yyd.service.common.Number;
+import com.yyd.service.utils.Number;
 
 public class CommonUtils {
 

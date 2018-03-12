@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.ybnf.compiler.beans.YbnfCompileResult;
 import com.ybnf.semantic.SemanticContext;
 import com.yyd.service.common.AbstractSemantic;
-import com.yyd.service.common.CommonUtils;
 import com.yyd.service.music.entity.MusicEntity;
 import com.yyd.service.music.mapper.MusicMapper;
+import com.yyd.service.utils.CommonUtils;
 
 @Service("music")
 public class MusicSemantic extends AbstractSemantic<MusicBean> {

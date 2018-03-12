@@ -1,4 +1,4 @@
-package com.yyd.service.common;
+package com.yyd.service.utils;
 
 import java.util.HashMap;
 import java.util.Map;
