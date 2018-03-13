@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ybnf.compiler.beans.YbnfCompileResult;
 import com.ybnf.semantic.Semantic;
 import com.ybnf.semantic.SemanticContext;
+import com.yyd.external.semantic.ExternalSemanticResult;
 import com.yyd.external.semantic.lingju.LingjuSemanticService;
 import com.yyd.external.semantic.sanjiaoshou.SanjiaoshouSemanticService;
 import com.yyd.external.semantic.xunfei.XunfeiSemanticService;
@@ -17,7 +18,10 @@ public class CommonSemantic implements Semantic<CommonBean> {
 	@Override
 	public CommonBean handle(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		semanticContext.setService("");
-		CommonBean bean = lingjuSemanticHandle(ybnfCompileResult, semanticContext);
+		CommonBean bean = xunfeiSemanticHandle(ybnfCompileResult, semanticContext);
+		if (bean == null) {
+			bean = lingjuSemanticHandle(ybnfCompileResult, semanticContext);
+		}
 		if (bean == null) {
 			bean = sanjiaoshouSemanticHandle(ybnfCompileResult, semanticContext);
 		}
@@ -27,12 +31,15 @@ public class CommonSemantic implements Semantic<CommonBean> {
 		return bean;
 	}
 
-	@SuppressWarnings("unused")
 	private CommonBean xunfeiSemanticHandle(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
-		Map<String, String> params = new HashMap<>();
-		params.put("userId", "1000861");// userId用户自定义即可
-		Semantic<CommonBean> semantic = new ExternalSemanticServiceImpl(new XunfeiSemanticService(), params);
-		return semantic.handle(ybnfCompileResult, semanticContext);
+		String text = (String) semanticContext.getLocalVar();
+		if (text == null) {
+			return null;
+		}
+		ExternalSemanticResult semanticResult = new ExternalSemanticResult();
+		semanticResult.setSrcResult(text);
+		new XunfeiSemanticService().parseResult(text, semanticResult);
+		return new ExternalSemanticServiceImpl(null, null).buildCommonBean(ybnfCompileResult, semanticResult);
 	}
 
 	private CommonBean lingjuSemanticHandle(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
