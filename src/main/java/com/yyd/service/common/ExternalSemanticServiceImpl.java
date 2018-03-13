@@ -23,12 +23,28 @@ public class ExternalSemanticServiceImpl implements Semantic<CommonBean> {
 		CommonBean bean = null;
 		try {
 			ExternalSemanticResult semanticResult = service.handleSemantic(ybnfCompileResult.getText(), params);
+			System.out.println("**********************************");
+			System.out.println("Ret : " + semanticResult.getRet());
+			System.out.println("Answer : " + semanticResult.getAnswer());
+			System.out.println("Service : " + semanticResult.getService());
+			System.out.println("Intent : " + semanticResult.getIntent());
+			System.out.println("Msg : " + semanticResult.getMsg());
+			System.out.println("Src Result : " + semanticResult.getSrcResult());
+			if (0 != semanticResult.getRet()) {
+				return bean;
+			}
 			Map<String, String> objects = ybnfCompileResult.getObjects();
-			for (Entry<String, Object> entry : semanticResult.getSlots().entrySet()) {
-				objects.put(entry.getKey(), entry.getValue().toString());
+			Map<String, Object> _slots = semanticResult.getSlots();
+			if (_slots != null) {
+				for (Entry<String, Object> entry : _slots.entrySet()) {
+					objects.put(entry.getKey(), entry.getValue().toString());
+				}
 			}
 			Map<String, String> slots = ybnfCompileResult.getSlots();
-			slots.put("intent", semanticResult.getIntent());
+			String _intent = semanticResult.getIntent();
+			if (_intent != null) {
+				slots.put("intent", _intent);
+			}
 			bean = new CommonBean();
 			bean.setSemantic(semanticResult.getAnswer());
 		} catch (Exception e) {
