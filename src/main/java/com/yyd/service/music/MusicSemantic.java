@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import com.ybnf.compiler.beans.YbnfCompileResult;
 import com.ybnf.semantic.SemanticContext;
 import com.yyd.service.common.AbstractSemantic;
-import com.yyd.service.music.entity.MusicEntity;
+import com.yyd.service.music.entity.ArtistEntity;
+import com.yyd.service.music.entity.SongEntity;
 import com.yyd.service.music.mapper.MusicMapper;
 import com.yyd.service.utils.CommonUtils;
 
@@ -22,24 +23,30 @@ public class MusicSemantic extends AbstractSemantic<MusicBean> {
 	public MusicBean searchBySinger(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
 		String singer = object.get("singer");
-		List<MusicEntity> musicEntities = musicMapper.getByAuthor(singer);
-		if (musicEntities.isEmpty()) {
+		ArtistEntity artist = musicMapper.getAuthorByName(singer);
+		if (artist==null) {
 			return new MusicBean(SEMANTIC_FAILURE);
 		} else {
-			MusicEntity musicEntity = musicEntities.get(0);
-			return new MusicBean(musicEntity.getUrl(), musicEntity);
+			List<Integer> songId=musicMapper.getSongIdByArtistId(artist.getId());
+			if(songId.isEmpty()) {
+				return new MusicBean(SEMANTIC_FAILURE);
+			}else {
+				int id=songId.get(CommonUtils.randomInt(songId.size()));
+				SongEntity song=musicMapper.getSongById(id);
+				return new MusicBean(song.getUrl(), song);
+			}
 		}
 	}
 
 	public MusicBean searchBySong(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
 		String song = object.get("song");
-		List<MusicEntity> musicEntities = musicMapper.getByName(song);
-		if (musicEntities.isEmpty()) {
+		List<SongEntity> songEntities = musicMapper.getSongByName(song);
+		if (songEntities.isEmpty()) {
 			return new MusicBean(SEMANTIC_FAILURE);
 		} else {
-			MusicEntity musicEntity = musicEntities.get(0);
-			return new MusicBean(musicEntity.getUrl(), musicEntity);
+			SongEntity songEntity = songEntities.get(0);
+			return new MusicBean(songEntity.getUrl(), songEntity);
 		}
 	}
 
@@ -47,24 +54,28 @@ public class MusicSemantic extends AbstractSemantic<MusicBean> {
 		Map<String, String> object = ybnfCompileResult.getObjects();
 		String song = object.get("song");
 		String singer = object.get("singer");
-		List<MusicEntity> musicEntities = musicMapper.getByAuthorAndSong(singer, song);
-		if (musicEntities.isEmpty()) {
+		ArtistEntity artist=musicMapper.getAuthorByName(singer);
+		List<SongEntity> songEntities=musicMapper.getSongByName(song);
+		if(songEntities.isEmpty()) {
 			return new MusicBean(SEMANTIC_FAILURE);
-		} else {
-			MusicEntity musicEntity = musicEntities.get(0);
-			return new MusicBean(musicEntity.getUrl(), musicEntity);
+		}else {
+			for (SongEntity songEntity : songEntities) {
+				if(musicMapper.getAuthorAndSongById(songEntity.getId(), artist.getId())!=null) {
+					return new MusicBean(songEntity.getUrl(), songEntity);
+				}
+			}
 		}
+		return new MusicBean(SEMANTIC_FAILURE);
 	}
 
 	public MusicBean searchRandom(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
-		List<MusicEntity> musicEntities = musicMapper.getRandom();
-		if (musicEntities.isEmpty()) {
+		List<SongEntity> songEntities = musicMapper.getRandom();
+		if (songEntities.isEmpty()) {
 			return new MusicBean(SEMANTIC_FAILURE);
 		} else {
-			int randomIdx = CommonUtils.randomInt(musicEntities.size());
-			MusicEntity musicEntity = musicEntities.get(randomIdx);
-			return new MusicBean(musicEntity.getUrl(), musicEntity);
+			int randomIdx = CommonUtils.randomInt(songEntities.size());
+			SongEntity songEntity = songEntities.get(randomIdx);
+			return new MusicBean(songEntity.getUrl(), songEntity);
 		}
-
 	}
 }
