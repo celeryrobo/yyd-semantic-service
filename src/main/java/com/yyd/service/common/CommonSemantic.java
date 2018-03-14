@@ -83,7 +83,6 @@ public class CommonSemantic implements Semantic<CommonBean> {
 			}
 			params.put("token", token);
 			semanticContext.getAttrs().put("token", userId + ":" + token);
-			bean = semantic.handle(ybnfCompileResult, semanticContext);
 		}
 		if (bean == null || bean.getErrCode() != 0) {
 			return null;
