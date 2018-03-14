@@ -5,6 +5,11 @@ public class SentenceEntity {
 	private String sentence;
 	private Integer poetryId;
 
+	@Override
+	public String toString() {
+		return "SentenceEntity [id=" + id + ", sentence=" + sentence + ", poetryId=" + poetryId + "]";
+	}
+
 	public Integer getId() {
 		return id;
 	}
