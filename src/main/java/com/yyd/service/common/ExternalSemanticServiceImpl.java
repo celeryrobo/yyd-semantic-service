@@ -59,7 +59,7 @@ public class ExternalSemanticServiceImpl implements Semantic<CommonBean> {
 			if (_intent != null) {
 				slots.put("intent", _intent);
 			}
-			bean.setSemantic(semanticResult.getAnswer());
+			bean.setText(semanticResult.getAnswer());
 		}
 		return bean;
 	}

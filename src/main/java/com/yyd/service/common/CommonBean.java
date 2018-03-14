@@ -3,13 +3,13 @@ package com.yyd.service.common;
 import com.ybnf.compiler.beans.AbstractSemanticResult;
 
 public class CommonBean extends AbstractSemanticResult {
-	private String semantic;
+	private String text;
 
-	public String getSemantic() {
-		return semantic;
+	public String getText() {
+		return text;
 	}
 
-	public void setSemantic(String semantic) {
-		this.semantic = semantic;
+	public void setText(String text) {
+		this.text = text;
 	}
 }

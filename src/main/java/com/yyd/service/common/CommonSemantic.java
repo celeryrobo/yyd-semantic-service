@@ -105,7 +105,7 @@ public class CommonSemantic implements Semantic<CommonBean> {
 		CommonBean bean = new CommonBean();
 		bean.setErrCode(404);
 		bean.setErrMsg("通用语义解析结构展示（缺少该场景解析逻辑）");
-		bean.setSemantic(ybnfCompileResult.toString());
+		bean.setText(ybnfCompileResult.toString());
 		return bean;
 	}
 }
