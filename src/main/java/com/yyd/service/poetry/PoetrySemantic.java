@@ -22,40 +22,52 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 	@Autowired
 	private SentenceMapper sentenceMapper;
 	public static final Integer SEMANTIC_FAILURE = 201;
-	
+
 	public PoetryBean searchByAuthor(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
 		String author = object.get("poetryAuthor");
-		List<PoetryEntity> poetryEntities=poetryMapper.findByAuthor(author);
+		List<PoetryEntity> poetryEntities = poetryMapper.findByAuthor(author);
 		return getResult(poetryEntities);
 	}
-	
+
 	public PoetryBean searchByTitle(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> objects = ybnfCompileResult.getObjects();
 		String title = objects.get("poetryTitle");
 		List<PoetryEntity> poetryEntities = poetryMapper.findByTitle(title);
 		return getResult(poetryEntities);
 	}
+
 	public PoetryBean searchByAuthorAndTitle(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> objects = ybnfCompileResult.getObjects();
 		String author = objects.get("poetryAuthor");
 		String title = objects.get("poetryTitle");
-		return getResult(poetryMapper.findByAuthorAndTitle(author, title));
+		List<PoetryEntity> poetryEntities=poetryMapper.findByAuthorAndTitle(author, title);
+		if(poetryEntities.isEmpty()) {
+			poetryEntities=poetryMapper.findByTitle(title);
+			if(poetryEntities.isEmpty()) {
+				poetryEntities=poetryMapper.findByAuthor(author);
+			}
+		}
+		return getResult(poetryEntities);
+	}
+	
+	public PoetryBean searchByRandom(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
+		List<PoetryEntity> poetryEntities=poetryMapper.findRandom();
+		return getResult(poetryEntities);
 	}
 	
 	public PoetryBean nextSent(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		PoetryBean bean = new PoetryBean();
 		Map<String, String> objects = ybnfCompileResult.getObjects();
 		String sentence = objects.get("poetrySentence");
-		List<SentenceEntity> sentenceEntites=sentenceMapper.findBySentence(sentence);
+		List<SentenceEntity> sentenceEntites = sentenceMapper.findBySentence(sentence);
 		for (SentenceEntity sentenceEntity : sentenceEntites) {
-			if(sentenceEntity.getSentence().equals(sentence)) {
+			if (sentenceEntity.getSentence().equals(sentence)) {
 				int id = sentenceEntity.getId();
-				id=id+1;
+				id = id + 1;
 				for (SentenceEntity senEntity : sentenceEntites) {
-					if(senEntity.getId().equals(id)) {
+					if (senEntity.getId().equals(id)) {
 						bean.setText(senEntity.getSentence());
-						System.out.println(poetryMapper.getById(senEntity.getPoetryId()));
 						bean.setResource(poetryMapper.getById(senEntity.getPoetryId()));
 						return bean;
 					}
@@ -67,18 +79,18 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 		}
 		return bean;
 	}
-	
+
 	public PoetryBean preSent(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		PoetryBean bean = new PoetryBean();
 		Map<String, String> objects = ybnfCompileResult.getObjects();
 		String sentence = objects.get("poetrySentence");
-		List<SentenceEntity> sentenceEntites=sentenceMapper.findBySentence(sentence);
+		List<SentenceEntity> sentenceEntites = sentenceMapper.findBySentence(sentence);
 		for (SentenceEntity sentenceEntity : sentenceEntites) {
-			if(sentenceEntity.getSentence().equals(sentence)) {
+			if (sentenceEntity.getSentence().equals(sentence)) {
 				int id = sentenceEntity.getId();
-				id=id-1;
+				id = id - 1;
 				for (SentenceEntity senEntity : sentenceEntites) {
-					if(senEntity.getId().equals(id)) {
+					if (senEntity.getId().equals(id)) {
 						bean.setText(senEntity.getSentence());
 						System.out.println(poetryMapper.getById(senEntity.getPoetryId()));
 						bean.setResource(poetryMapper.getById(senEntity.getPoetryId()));
@@ -94,35 +106,37 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 	}
 	
 	
+
 	private PoetryBean getResult(List<PoetryEntity> poetryEntities) {
-		if(poetryEntities.isEmpty()) {
+		if (poetryEntities.isEmpty()) {
 			return new PoetryBean(SEMANTIC_FAILURE);
-		}else {
-			int randomNum=CommonUtils.randomInt(poetryEntities.size());
-			PoetryEntity poetry=poetryEntities.get(randomNum);
-			return new PoetryBean(poetry.getContent(),poetry);
+		} else {
+			int randomNum = CommonUtils.randomInt(poetryEntities.size());
+			PoetryEntity poetry = poetryEntities.get(randomNum);
+			StringBuffer text = new StringBuffer();
+			text.append(poetry.getTitle()).append("，").append(poetry.getAuthorName()).append("，")
+					.append(poetry.getContent());
+			return new PoetryBean(text.toString(), poetry);
 		}
 	}
-	
-
 
 	public PoetryBean firstSent(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		PoetryBean bean = new PoetryBean();
 		Map<String, String> objects = ybnfCompileResult.getObjects();
 		String title = objects.get("poetryTitle");
-		List<PoetryEntity> poetryEntities=poetryMapper.findByTitle(title);
-		if(poetryEntities.isEmpty()) {
+		List<PoetryEntity> poetryEntities = poetryMapper.findByTitle(title);
+		if (poetryEntities.isEmpty()) {
 			bean.setErrCode(SEMANTIC_FAILURE);
 			return bean;
-		}else {
-			int randomNum=CommonUtils.randomInt(poetryEntities.size());
-			PoetryEntity poetry=poetryEntities.get(randomNum);
-			List<SentenceEntity> sentenceEntities=sentenceMapper.findByPoetryId(poetry.getId());
-			if(sentenceEntities.isEmpty()) {
+		} else {
+			int randomNum = CommonUtils.randomInt(poetryEntities.size());
+			PoetryEntity poetry = poetryEntities.get(randomNum);
+			List<SentenceEntity> sentenceEntities = sentenceMapper.findByPoetryId(poetry.getId());
+			if (sentenceEntities.isEmpty()) {
 				bean.setErrCode(SEMANTIC_FAILURE);
 				return bean;
-			}else {
-				SentenceEntity sentence=sentenceEntities.get(0);
+			} else {
+				SentenceEntity sentence = sentenceEntities.get(0);
 				bean.setText(sentence.getSentence());
 				bean.setResource(poetry);
 				return bean;
@@ -134,20 +148,20 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 		PoetryBean bean = new PoetryBean();
 		Map<String, String> objects = ybnfCompileResult.getObjects();
 		String title = objects.get("poetryTitle");
-		List<PoetryEntity> poetryEntities=poetryMapper.findByTitle(title);
-		if(poetryEntities.isEmpty()) {
+		List<PoetryEntity> poetryEntities = poetryMapper.findByTitle(title);
+		if (poetryEntities.isEmpty()) {
 			bean.setErrCode(SEMANTIC_FAILURE);
 			return bean;
-		}else {
-			int randomNum=CommonUtils.randomInt(poetryEntities.size());
-			PoetryEntity poetry=poetryEntities.get(randomNum);
-			List<SentenceEntity> sentenceEntities=sentenceMapper.findByPoetryId(poetry.getId());
-			if(sentenceEntities.isEmpty()) {
+		} else {
+			int randomNum = CommonUtils.randomInt(poetryEntities.size());
+			PoetryEntity poetry = poetryEntities.get(randomNum);
+			List<SentenceEntity> sentenceEntities = sentenceMapper.findByPoetryId(poetry.getId());
+			if (sentenceEntities.isEmpty()) {
 				bean.setErrCode(SEMANTIC_FAILURE);
 				return bean;
-			}else {
-				int index=sentenceEntities.size()-1;
-				SentenceEntity sentence=sentenceEntities.get(index);
+			} else {
+				int index = sentenceEntities.size() - 1;
+				SentenceEntity sentence = sentenceEntities.get(index);
 				bean.setText(sentence.getSentence());
 				bean.setResource(poetry);
 				return bean;

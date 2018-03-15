@@ -22,23 +22,23 @@ public class StorySementic extends AbstractSemantic<StoryBean> {
 	public StoryBean searchByCategory(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
 		String category = object.get("storyCategory");
-		return getResult(storyMapper.getStoryByCategory(category));
+		return getResult(storyMapper.findByCategory(category));
 	}
 
 	public StoryBean searchByName(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
 		String name = object.get("storyName");
-		return getResult(storyMapper.getStoryByName(name));
+		return getResult(storyMapper.findByName(name));
 	}
 
 	public StoryBean searchByAlbum(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
 		String album = object.get("storyAlbum");
-		return getResult(storyMapper.getStoryByAlbum(album));
+		return getResult(storyMapper.findByAlbum(album));
 	}
 
 	public StoryBean searchRandom(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
-		return getResult(storyMapper.getStoryByRandom());
+		return getResult(storyMapper.findRandom());
 	}
 
 	private StoryBean getResult(List<StoryEntity> storyEntities) {

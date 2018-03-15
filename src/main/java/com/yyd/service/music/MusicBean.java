@@ -3,8 +3,10 @@ package com.yyd.service.music;
 import com.ybnf.compiler.beans.AbstractSemanticResult;
 
 public class MusicBean extends AbstractSemanticResult {
+	private String text;
 	private String url;
-	
+	public MusicBean() {
+	}
 	public MusicBean(int errCode) {
 		setErrCode(errCode);
 	}
@@ -20,5 +22,12 @@ public class MusicBean extends AbstractSemanticResult {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public String getText() {
+		return text;
+	}
+	public void setText(String answer) {
+		this.text = answer;
 	}
 }
