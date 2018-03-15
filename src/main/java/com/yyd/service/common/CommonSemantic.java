@@ -91,8 +91,9 @@ public class CommonSemantic implements Semantic<CommonBean> {
 	}
 
 	private CommonBean sanjiaoshouSemanticHandle(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
+		String userIdentify = semanticContext.getUserIdentify();
 		Map<String, String> params = new HashMap<>();
-		params.put("userId", "1000861");// userId用户自定义即可
+		params.put("userId", userIdentify);// userId用户自定义即可
 		Semantic<CommonBean> semantic = new ExternalSemanticServiceImpl(new SanjiaoshouSemanticService(), params);
 		CommonBean bean = semantic.handle(ybnfCompileResult, semanticContext);
 		if (bean == null || bean.getErrCode() != 0) {
