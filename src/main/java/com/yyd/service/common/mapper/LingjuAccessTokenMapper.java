@@ -13,22 +13,22 @@ import com.yyd.service.domain.LingjuAccessToken;
 
 @Mapper
 public interface LingjuAccessTokenMapper {
-	@Select("SELECT COUNT(*) FROM robot_user.lingju_accesstoken")
+	@Select("SELECT COUNT(*) FROM yyd_resources.lingju_accesstoken")
 	public Integer count();
 
-	@Select("SELECT i, userId, accessToken FROM robot_user.lingju_accesstoken")
+	@Select("SELECT i, userId, accessToken FROM yyd_resources.lingju_accesstoken")
 	@Results({ @Result(property = "id", column = "i"), @Result(property = "userId", column = "userId"),
 			@Result(property = "accessToken", column = "accessToken") })
 	public List<LingjuAccessToken> findAll();
 
-	@Select("SELECT i, userId, accessToken FROM robot_user.lingju_accesstoken WHERE userId=#{userId} LIMIT 1")
+	@Select("SELECT i, userId, accessToken FROM yyd_resources.lingju_accesstoken WHERE userId=#{userId} LIMIT 1")
 	@Results({ @Result(property = "id", column = "i"), @Result(property = "userId", column = "userId"),
 			@Result(property = "accessToken", column = "accessToken") })
 	public LingjuAccessToken getByUserId(String userId);
 
-	@Insert("INSERT INTO robot_user.lingju_accesstoken(userId, accessToken) VALUES(#{userId}, #{accessToken})")
+	@Insert("INSERT INTO yyd_resources.lingju_accesstoken(userId, accessToken) VALUES(#{userId}, #{accessToken})")
 	public void add(LingjuAccessToken lingjuAccessToken);
 
-	@Update("UPDATE robot_user.lingju_accesstoken SET accessToken = ${accessToken} WHERE userId = #{userId}")
+	@Update("UPDATE yyd_resources.lingju_accesstoken SET accessToken = ${accessToken} WHERE userId = #{userId}")
 	public void update(LingjuAccessToken lingjuAccessToken);
 }
