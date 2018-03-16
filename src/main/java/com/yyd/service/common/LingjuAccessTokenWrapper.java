@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
@@ -19,6 +20,7 @@ import com.yyd.service.domain.LingjuAccessToken;
 
 @Component
 public class LingjuAccessTokenWrapper {
+	private static final Logger LOG = Logger.getLogger(LingjuAccessTokenWrapper.class.getSimpleName());
 	private static final Long TIMEOUT = 24L * 60L * 60L;
 	private static final String ACCESS_TOKEN_KEY = "LINGJU:ACCESS:TOKEN";
 	public static final int ACCESS_TOKEN_LIMIT = 200;
@@ -111,8 +113,8 @@ public class LingjuAccessTokenWrapper {
 	public String reloadAccessToken(LingjuSemanticService lingjuSemanticService, String userId, String userIp) {
 		ExternalSemanticResult externalSemanticResult = new ExternalSemanticResult();
 		String token = lingjuSemanticService.getAccessToken(userId, userIp, externalSemanticResult);
-		System.out.println(userId + " lingju access token:" + token);
-		System.out.println("lingju access token err msg : " + externalSemanticResult.getRet() + "/"
+		LOG.info(userId + " lingju access token:" + token);
+		LOG.info("lingju access token err msg : " + externalSemanticResult.getRet() + "/"
 				+ externalSemanticResult.getMsg() + "/" + externalSemanticResult.getSemanticRet() + "/"
 				+ externalSemanticResult.getSemanticMsg());
 		LingjuAccessToken accessToken = accessTokenMapper.getByUserId(userId);

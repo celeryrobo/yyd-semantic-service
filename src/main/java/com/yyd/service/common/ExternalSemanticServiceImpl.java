@@ -2,6 +2,7 @@ package com.yyd.service.common;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import com.ybnf.compiler.beans.YbnfCompileResult;
 import com.ybnf.semantic.Semantic;
@@ -10,6 +11,7 @@ import com.yyd.external.semantic.ExternalSemanticResult;
 import com.yyd.external.semantic.ExternalSemanticService;
 
 public class ExternalSemanticServiceImpl implements Semantic<CommonBean> {
+	private static final Logger LOG = Logger.getLogger(ExternalSemanticServiceImpl.class.getSimpleName());
 	private ExternalSemanticService service;
 	private Map<String, String> params;
 
@@ -23,13 +25,13 @@ public class ExternalSemanticServiceImpl implements Semantic<CommonBean> {
 		CommonBean bean = null;
 		try {
 			ExternalSemanticResult semanticResult = service.handleSemantic(ybnfCompileResult.getText(), params);
-			System.out.println("**********************************");
-			System.out.println("Ret : " + semanticResult.getRet());
-			System.out.println("Answer : " + semanticResult.getAnswer());
-			System.out.println("Service : " + semanticResult.getService());
-			System.out.println("Intent : " + semanticResult.getIntent());
-			System.out.println("Msg : " + semanticResult.getMsg());
-			System.out.println("Src Result : " + semanticResult.getSrcResult());
+			LOG.info("**********************************");
+			LOG.info("Ret : " + semanticResult.getRet());
+			LOG.info("Answer : " + semanticResult.getAnswer());
+			LOG.info("Service : " + semanticResult.getService());
+			LOG.info("Intent : " + semanticResult.getIntent());
+			LOG.info("Msg : " + semanticResult.getMsg());
+			LOG.info("Src Result : " + semanticResult.getSrcResult());
 			bean = buildCommonBean(ybnfCompileResult, semanticResult);
 		} catch (Exception e) {
 			bean = new CommonBean();
