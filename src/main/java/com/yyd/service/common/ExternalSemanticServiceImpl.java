@@ -44,25 +44,26 @@ public class ExternalSemanticServiceImpl implements Semantic<CommonBean> {
 	public CommonBean buildCommonBean(YbnfCompileResult ybnfCompileResult, ExternalSemanticResult semanticResult) {
 		CommonBean bean = new CommonBean();
 		bean.setErrCode(semanticResult.getRet());
-		if (0 == semanticResult.getRet()) {
-			String service = semanticResult.getService();
-			if (service != null) {
-				ybnfCompileResult.setService(service);
-			}
-			Map<String, String> objects = ybnfCompileResult.getObjects();
-			Map<String, Object> _slots = semanticResult.getSlots();
-			if (_slots != null) {
-				for (Entry<String, Object> entry : _slots.entrySet()) {
-					objects.put(entry.getKey(), entry.getValue().toString());
-				}
-			}
-			Map<String, String> slots = ybnfCompileResult.getSlots();
-			String _intent = semanticResult.getIntent();
-			if (_intent != null) {
-				slots.put("intent", _intent);
-			}
-			bean.setText(semanticResult.getAnswer());
+		if (0 != semanticResult.getRet()) {
+			return bean;
 		}
+		String service = semanticResult.getService();
+		if (service != null) {
+			ybnfCompileResult.setService(service);
+		}
+		Map<String, String> objects = ybnfCompileResult.getObjects();
+		Map<String, Object> slots = semanticResult.getSlots();
+		if (slots != null) {
+			for (Entry<String, Object> entry : slots.entrySet()) {
+				objects.put(entry.getKey(), entry.getValue().toString());
+			}
+		}
+		Map<String, String> yydSlots = ybnfCompileResult.getSlots();
+		String intent = semanticResult.getIntent();
+		if (intent != null) {
+			yydSlots.put("intent", intent);
+		}
+		bean.setText(semanticResult.getAnswer());
 		return bean;
 	}
 }

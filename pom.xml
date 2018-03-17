@@ -42,7 +42,7 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>yyd.com</groupId>
+			<groupId>com.yyd</groupId>
 			<artifactId>yyd-external-semantic</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
