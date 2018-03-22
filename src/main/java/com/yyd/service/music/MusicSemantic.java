@@ -20,7 +20,7 @@ import com.yyd.service.utils.CommonUtils;
 public class MusicSemantic extends AbstractSemantic<MusicBean> {
 	@Autowired
 	private MusicMapper musicMapper;
-	public static final Integer SEMANTIC_FAILURE = 201;
+	public static final Integer SEMANTIC_FAILURE = 2001;
 	
 	public MusicBean searchBySinger(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
@@ -47,6 +47,11 @@ public class MusicSemantic extends AbstractSemantic<MusicBean> {
 		}else {
 			int randomNum = CommonUtils.randomInt(te.size());
 			TagEntity tagEntity=te.get(randomNum);
+			tagEntity.setUrl("www.tag.song.mp3");
+			bean.setText("好的");
+			bean.setUrl(tagEntity.getUrl());
+			bean.setOperation(Operation.PLAY);
+			bean.setParamType(ParamType.TU);
 			bean.setResource(tagEntity);
 			return bean;
 		}

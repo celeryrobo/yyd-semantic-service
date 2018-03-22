@@ -2,6 +2,7 @@ package com.yyd.service.music;
 
 import com.ybnf.compiler.beans.AbstractSemanticResult;
 
+
 public class MusicBean extends AbstractSemanticResult {
 	private String text;
 	private String url;

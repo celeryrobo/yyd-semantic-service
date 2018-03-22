@@ -4,6 +4,7 @@ public class TagEntity {
 	private Integer id;
 	private String tag;
 	private String song;
+	private String url;
 
 	public Integer getId() {
 		return id;
@@ -27,6 +28,14 @@ public class TagEntity {
 
 	public void setSong(String song) {
 		this.song = song;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }
