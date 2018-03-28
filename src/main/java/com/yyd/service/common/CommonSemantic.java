@@ -54,11 +54,16 @@ public class CommonSemantic implements Semantic<CommonBean> {
 		if (text == null) {
 			return null;
 		}
+		System.out.println("Xunfei Semantic Data : " + text);
 		ExternalSemanticResult semanticResult = new ExternalSemanticResult();
 		semanticResult.setSrcResult(text);
-		new XunfeiSemanticService().parseResult(text, semanticResult);
-		CommonBean bean = new ExternalSemanticServiceImpl(null, null).buildCommonBean(ybnfCompileResult,
-				semanticResult);
+		CommonBean bean = null;
+		try {
+			new XunfeiSemanticService().parseResult(text, semanticResult);
+			bean = new ExternalSemanticServiceImpl(null, null).buildCommonBean(ybnfCompileResult, semanticResult);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (bean == null || bean.getErrCode() != 0) {
 			return null;
 		}
