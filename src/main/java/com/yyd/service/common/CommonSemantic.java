@@ -54,6 +54,9 @@ public class CommonSemantic implements Semantic<CommonBean> {
 		if (text == null) {
 			return null;
 		}
+		StringBuilder sb = new StringBuilder("{\"code\":\"00000\",\"desc\":\"成功\",\"sid\":\"rwa2ac04d1c@chfca30da12150000100\",\"data\":");
+		sb.append(text).append("}");
+		text = sb.toString();
 		System.out.println("Xunfei Semantic Data : " + text);
 		ExternalSemanticResult semanticResult = new ExternalSemanticResult();
 		semanticResult.setSrcResult(text);
