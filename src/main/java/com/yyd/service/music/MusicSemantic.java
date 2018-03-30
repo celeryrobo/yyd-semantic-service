@@ -20,7 +20,9 @@ import com.yyd.service.utils.CommonUtils;
 public class MusicSemantic extends AbstractSemantic<MusicBean> {
 	@Autowired
 	private MusicMapper musicMapper;
-	public static final Integer SEMANTIC_FAILURE = 2001;
+	public static final Integer SEMANTIC_FAILURE_CODE = 2001;
+	public static final String SEMANTIC_FAILURE_TEXT = "抱歉，没有找到相关资源";
+	public static final String MUSIC_ANSWER_TEXT = "好的，我要开始唱了";
 	
 	public MusicBean searchBySinger(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
@@ -42,13 +44,14 @@ public class MusicSemantic extends AbstractSemantic<MusicBean> {
 		String tag = object.get("songTag");
 		List<TagEntity> te = musicMapper.findByTag(tag);
 		if(te.isEmpty()) {
-			bean.setErrCode(SEMANTIC_FAILURE);
+			bean.setErrCode(SEMANTIC_FAILURE_CODE);
+			bean.setText(SEMANTIC_FAILURE_TEXT);
 			return bean;
 		}else {
 			int randomNum = CommonUtils.randomInt(te.size());
 			TagEntity tagEntity=te.get(randomNum);
 			tagEntity.setUrl("www.tag.song.mp3");
-			bean.setText("好的");
+			bean.setText(MUSIC_ANSWER_TEXT);
 			bean.setUrl(tagEntity.getUrl());
 			bean.setOperation(Operation.PLAY);
 			bean.setParamType(ParamType.TU);
@@ -79,12 +82,13 @@ public class MusicSemantic extends AbstractSemantic<MusicBean> {
 	private MusicBean getResult(List<MusicEntity> musicEntities) {
 		MusicBean bean=new MusicBean();
 		if (musicEntities.isEmpty()) {
-			bean.setErrCode(SEMANTIC_FAILURE);
+			bean.setErrCode(SEMANTIC_FAILURE_CODE);
+			bean.setText(SEMANTIC_FAILURE_TEXT);
 			return bean;
 		} else {
 			int randomNum = CommonUtils.randomInt(musicEntities.size());
 			MusicEntity music = musicEntities.get(randomNum);
-			bean.setText("请欣赏"+music.getSinger()+"的"+music.getSong());
+			bean.setText(MUSIC_ANSWER_TEXT);
 			bean.setUrl(music.getUrl());
 			bean.setOperation(Operation.PLAY);
 			bean.setParamType(ParamType.TU);

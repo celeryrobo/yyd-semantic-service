@@ -21,7 +21,8 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 	private PoetryMapper poetryMapper;
 	@Autowired
 	private SentenceMapper sentenceMapper;
-	public static final Integer SEMANTIC_FAILURE = 201;
+	public static final Integer SEMANTIC_FAILURE_CODE = 2001;
+	public static final String SEMANTIC_FAILURE_TEXT = "抱歉，没有找到相关资源";
 
 	public PoetryBean searchByAuthor(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
@@ -109,7 +110,7 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 
 	private PoetryBean getResult(List<PoetryEntity> poetryEntities) {
 		if (poetryEntities.isEmpty()) {
-			return new PoetryBean(SEMANTIC_FAILURE);
+			return new PoetryBean(SEMANTIC_FAILURE_CODE,SEMANTIC_FAILURE_TEXT);
 		} else {
 			int randomNum = CommonUtils.randomInt(poetryEntities.size());
 			PoetryEntity poetry = poetryEntities.get(randomNum);
@@ -126,14 +127,16 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 		String title = objects.get("poetryTitle");
 		List<PoetryEntity> poetryEntities = poetryMapper.findByTitle(title);
 		if (poetryEntities.isEmpty()) {
-			bean.setErrCode(SEMANTIC_FAILURE);
+			bean.setErrCode(SEMANTIC_FAILURE_CODE);
+			bean.setErrMsg(SEMANTIC_FAILURE_TEXT);
 			return bean;
 		} else {
 			int randomNum = CommonUtils.randomInt(poetryEntities.size());
 			PoetryEntity poetry = poetryEntities.get(randomNum);
 			List<SentenceEntity> sentenceEntities = sentenceMapper.findByPoetryId(poetry.getId());
 			if (sentenceEntities.isEmpty()) {
-				bean.setErrCode(SEMANTIC_FAILURE);
+				bean.setErrCode(SEMANTIC_FAILURE_CODE);
+				bean.setErrMsg(SEMANTIC_FAILURE_TEXT);
 				return bean;
 			} else {
 				SentenceEntity sentence = sentenceEntities.get(0);
@@ -150,14 +153,16 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 		String title = objects.get("poetryTitle");
 		List<PoetryEntity> poetryEntities = poetryMapper.findByTitle(title);
 		if (poetryEntities.isEmpty()) {
-			bean.setErrCode(SEMANTIC_FAILURE);
+			bean.setErrCode(SEMANTIC_FAILURE_CODE);
+			bean.setErrMsg(SEMANTIC_FAILURE_TEXT);
 			return bean;
 		} else {
 			int randomNum = CommonUtils.randomInt(poetryEntities.size());
 			PoetryEntity poetry = poetryEntities.get(randomNum);
 			List<SentenceEntity> sentenceEntities = sentenceMapper.findByPoetryId(poetry.getId());
 			if (sentenceEntities.isEmpty()) {
-				bean.setErrCode(SEMANTIC_FAILURE);
+				bean.setErrCode(SEMANTIC_FAILURE_CODE);
+				bean.setErrMsg(SEMANTIC_FAILURE_TEXT);
 				return bean;
 			} else {
 				int index = sentenceEntities.size() - 1;

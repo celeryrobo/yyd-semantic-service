@@ -17,7 +17,9 @@ import com.yyd.service.utils.CommonUtils;
 public class StorySementic extends AbstractSemantic<StoryBean> {
 	@Autowired
 	private StoryMapper storyMapper;
-	public static final Integer SEMANTIC_FAILURE = 201;
+	public static final Integer SEMANTIC_FAILURE_CODE = 2001;
+	public static final String SEMANTIC_FAILURE_TEXT = "抱歉，没有找到相关资源";
+	public static final String ANSWER_TEXT = "好的，我要开始讲了";
 
 	public StoryBean searchByCategory(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
@@ -43,11 +45,11 @@ public class StorySementic extends AbstractSemantic<StoryBean> {
 
 	private StoryBean getResult(List<StoryEntity> storyEntities) {
 		if (storyEntities.isEmpty()) {
-			return new StoryBean(SEMANTIC_FAILURE);
+			return new StoryBean(SEMANTIC_FAILURE_CODE, SEMANTIC_FAILURE_TEXT);
 		} else {
 			int randomNum = CommonUtils.randomInt(storyEntities.size());
 			StoryEntity story = storyEntities.get(randomNum);
-			return new StoryBean(story.getUrl(), story);
+			return new StoryBean(story.getUrl(), ANSWER_TEXT, story);
 		}
 	}
 }

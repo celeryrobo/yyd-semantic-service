@@ -8,8 +8,9 @@ public class PoetryBean extends AbstractSemanticResult {
 	public PoetryBean() {
 	}
 
-	public PoetryBean(int errCode) {
+	public PoetryBean(int errCode,String errMsg) {
 		setErrCode(errCode);
+		setText(errMsg);
 	}
 
 	public PoetryBean(String text, Object resource) {
