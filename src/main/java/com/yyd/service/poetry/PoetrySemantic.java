@@ -3,6 +3,7 @@ package com.yyd.service.poetry;
 import java.util.List;
 import java.util.Map;
 
+import org.nlpcn.commons.lang.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 	private SentenceMapper sentenceMapper;
 	public static final Integer SEMANTIC_FAILURE_CODE = 2001;
 	public static final String SEMANTIC_FAILURE_TEXT = "抱歉，没有找到相关资源";
+	private static final String LAST_SENTENCE="已经是最后一句啦";
+	private static final String FISRT_SENTENCE="已经是第一句啦";
 
 	public PoetryBean searchByAuthor(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		Map<String, String> object = ybnfCompileResult.getObjects();
@@ -42,21 +45,34 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 		Map<String, String> objects = ybnfCompileResult.getObjects();
 		String author = objects.get("poetryAuthor");
 		String title = objects.get("poetryTitle");
-		List<PoetryEntity> poetryEntities=poetryMapper.findByAuthorAndTitle(author, title);
-		if(poetryEntities.isEmpty()) {
-			poetryEntities=poetryMapper.findByTitle(title);
-			if(poetryEntities.isEmpty()) {
-				poetryEntities=poetryMapper.findByAuthor(author);
+		List<PoetryEntity> poetryEntities = poetryMapper.findByAuthorAndTitle(author, title);
+		if (poetryEntities.isEmpty()) {
+			poetryEntities = poetryMapper.findByTitle(title);
+			if (poetryEntities.isEmpty()) {
+				poetryEntities = poetryMapper.findByAuthor(author);
 			}
 		}
 		return getResult(poetryEntities);
 	}
-	
+
 	public PoetryBean searchByRandom(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
-		List<PoetryEntity> poetryEntities=poetryMapper.findRandom();
+		List<PoetryEntity> poetryEntities = poetryMapper.findRandom();
 		return getResult(poetryEntities);
 	}
-	
+
+	public PoetryBean searchBySent(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
+		List<PoetryEntity> poetryEntities;
+		Map<String, String> objects = ybnfCompileResult.getObjects();
+		String poetrySentence = objects.get("poetrySentence");
+		String author = objects.get("poetryAuthor");
+		if(StringUtil.isNotBlank(author)) {
+			poetryEntities = poetryMapper.findByAuthorAndSent(author, poetrySentence);
+			return getResult(poetryEntities);
+		}
+		poetryEntities = poetryMapper.findBySent(poetrySentence);
+		return getResult(poetryEntities);
+	}
+
 	public PoetryBean nextSent(YbnfCompileResult ybnfCompileResult, SemanticContext semanticContext) {
 		PoetryBean bean = new PoetryBean();
 		Map<String, String> objects = ybnfCompileResult.getObjects();
@@ -73,7 +89,7 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 						return bean;
 					}
 				}
-				bean.setText("已经是最后一句了。");
+				bean.setText(LAST_SENTENCE);
 				bean.setResource(poetryMapper.getById(sentenceEntity.getPoetryId()));
 				return bean;
 			}
@@ -98,19 +114,17 @@ public class PoetrySemantic extends AbstractSemantic<PoetryBean> {
 						return bean;
 					}
 				}
-				bean.setText("已经是第一句了。");
+				bean.setText(FISRT_SENTENCE);
 				bean.setResource(poetryMapper.getById(sentenceEntity.getPoetryId()));
 				return bean;
 			}
 		}
 		return bean;
 	}
-	
-	
 
 	private PoetryBean getResult(List<PoetryEntity> poetryEntities) {
 		if (poetryEntities.isEmpty()) {
-			return new PoetryBean(SEMANTIC_FAILURE_CODE,SEMANTIC_FAILURE_TEXT);
+			return new PoetryBean(SEMANTIC_FAILURE_CODE, SEMANTIC_FAILURE_TEXT);
 		} else {
 			int randomNum = CommonUtils.randomInt(poetryEntities.size());
 			PoetryEntity poetry = poetryEntities.get(randomNum);
